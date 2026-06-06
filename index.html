@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Seguro</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:linear-gradient(135deg,#4facfe,#00f2fe);min-height:100vh;display:flex;justify-content:center;align-items:center}
+.box{background:white;padding:25px;border-radius:15px;width:350px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
+input,button{width:100%;padding:10px;margin-top:8px;box-sizing:border-box}
+button{cursor:pointer}
+.hidden{display:none}
+#barraContainer{height:12px;background:#ddd;border-radius:10px;overflow:hidden}
+#barraForca{height:100%;width:0%;transition:.3s}
+.dark{background:#111 !important;color:white}
+.dark .box{background:#222;color:white}
+img{max-width:100px;border-radius:50%;display:block;margin:auto}
+#relogio{text-align:center;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="box" id="cadastro">
+<h2>📝 Cadastro</h2>
+<input id="novoUsuario" placeholder="Usuário">
+<input type="password" id="novaSenha" placeholder="Senha" oninput="verificarForcaSenha()">
+<div id="barraContainer"><div id="barraForca"></div></div>
+<p id="textoForca">Força da senha: -</p>
+<button onclick="gerarSenha()">🔐 Gerar Senha Forte</button>
+<button onclick="mostrarSenha()">👁️ Mostrar/Ocultar Senha</button>
+<button onclick="copiarSenha()">📋 Copiar Senha</button>
+<button onclick="cadastrar()">Cadastrar</button>
+<p id="msgCadastro"></p>
+</div>
+
+<div class="box hidden" id="login">
+<h2>🔑 Login</h2>
+<input id="usuario" placeholder="Usuário">
+<input type="password" id="senha" placeholder="Senha">
+<button onclick="entrar()">Entrar</button>
+<p id="msgLogin"></p>
+</div>
+
+<div class="box hidden" id="painel">
+<h2>🎉 Painel Principal</h2>
+<p id="bemvindo"></p>
+<div id="relogio"></div>
+<p>📈 Logins realizados: <span id="contador"></span></p>
+<input type="file" accept="image/*" onchange="fotoPerfil(event)">
+<img id="foto" style="display:none">
+<button onclick="alternarTema()">🌙 Modo Escuro</button>
+<button onclick="sair()">🚪 Sair</button>
+</div>
+
+<script>
+function gerarSenha(){
+let c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
+let s="";
+for(let i=0;i<12;i++) s+=c.charAt(Math.floor(Math.random()*c.length));
+novaSenha.value=s; verificarForcaSenha();
+}
+function verificarForcaSenha(){
+let s=novaSenha.value,f=0;
+if(s.length>=8)f++; if(/[A-Z]/.test(s))f++; if(/[a-z]/.test(s))f++; if(/[0-9]/.test(s))f++; if(/[!@#$%&*]/.test(s))f++;
+if(f<=2){barraForca.style.width="33%";barraForca.style.background="red";textoForca.innerText="🔴 Fraca";}
+else if(f<=4){barraForca.style.width="66%";barraForca.style.background="orange";textoForca.innerText="🟡 Média";}
+else{barraForca.style.width="100%";barraForca.style.background="green";textoForca.innerText="🟢 Forte";}
+}
+function mostrarSenha(){novaSenha.type=novaSenha.type==="password"?"text":"password";}
+function copiarSenha(){navigator.clipboard.writeText(novaSenha.value);alert("Senha copiada!");}
+function cadastrar(){
+localStorage.setItem("usuario",novoUsuario.value);
+localStorage.setItem("senha",novaSenha.value);
+msgCadastro.innerText="✅ Cadastro realizado";
+setTimeout(()=>{cadastro.classList.add("hidden");login.classList.remove("hidden");},1000);
+}
+function entrar(){
+if(usuario.value===localStorage.getItem("usuario")&&senha.value===localStorage.getItem("senha")){
+localStorage.setItem("logado","sim");
+let n=(parseInt(localStorage.getItem("contador")||"0")+1);
+localStorage.setItem("contador",n);
+login.classList.add("hidden");painel.classList.remove("hidden");
+bemvindo.innerText="👋 Bem-vindo, "+usuario.value;
+contador.innerText=n;
+}else msgLogin.innerText="❌ Usuário ou senha incorretos";
+}
+function sair(){localStorage.removeItem("logado");location.reload();}
+function alternarTema(){document.body.classList.toggle("dark");}
+function fotoPerfil(e){
+let r=new FileReader();
+r.onload=function(){foto.src=r.result;foto.style.display="block";}
+r.readAsDataURL(e.target.files[0]);
+}
+setInterval(()=>{if(relogio) relogio.innerText=new Date().toLocaleString("pt-BR");},1000);
+window.onload=function(){
+if(localStorage.getItem("logado")==="sim"){
+cadastro.classList.add("hidden");login.classList.add("hidden");painel.classList.remove("hidden");
+bemvindo.innerText="👋 Bem-vindo, "+(localStorage.getItem("usuario")||"Usuário");
+contador.innerText=localStorage.getItem("contador")||"0";
+}else{
+cadastro.classList.remove("hidden");
+}
+}
+</script>
+</body>
+</html>
