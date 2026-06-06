@@ -51,7 +51,11 @@ button{
 
     <input type="text" id="novoUsuario" placeholder="Usuário">
     <input type="password" id="novaSenha" placeholder="Senha">
+<input type="password" id="novaSenha" placeholder="Senha">
 
+<button onclick="gerarSenha()">Gerar Senha Forte</button>
+
+<button onclick="cadastrar()">Cadastrar</button>
     <button onclick="cadastrar()">Cadastrar</button>
 
     <hr>
@@ -93,6 +97,20 @@ function entrar() {
         "Usuário ou senha incorretos!";
     }
 }
+    function gerarSenha() {
+    const caracteres =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
+
+    let senha = "";
+
+    for(let i = 0; i < 12; i++) {
+        senha += caracteres.charAt(
+            Math.floor(Math.random() * caracteres.length)
+        );
+    }
+
+    document.getElementById("novaSenha").value = senha;
+    }
 </script>
 
 </body>
