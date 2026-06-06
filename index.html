@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Login</title>
+<title>Gerador de Senhas</title>
 
 <style>
 body{
     font-family: Arial, sans-serif;
-    background:#f4f4f4;
+    background:#f0f0f0;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -17,100 +17,73 @@ body{
 
 .container{
     background:white;
-    padding:25px;
+    padding:20px;
     border-radius:10px;
-    width:300px;
+    width:320px;
     box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-input{
+input, button{
     width:100%;
     padding:10px;
-    margin:8px 0;
+    margin-top:10px;
     box-sizing:border-box;
 }
 
-button{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    cursor:pointer;
-}
-
-#mensagem{
-    margin-top:10px;
-    text-align:center;
+#senha{
     font-weight:bold;
+    text-align:center;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Cadastro</h2>
+    <h2>🔐 Gerador de Senhas</h2>
 
-    <input type="text" id="novoUsuario" placeholder="Usuário">
-    <input type="password" id="novaSenha" placeholder="Senha">
-<input type="password" id="novaSenha" placeholder="Senha">
+    <input type="text" id="senha" readonly placeholder="Sua senha aparecerá aqui">
 
-<button onclick="gerarSenha()">Gerar Senha Forte</button>
+    <button onclick="gerarSenha()">
+        🔑 Gerar Senha Forte
+    </button>
 
-<button onclick="cadastrar()">Cadastrar</button>
-    <button onclick="cadastrar()">Cadastrar</button>
+    <button onclick="copiarSenha()">
+        📋 Copiar Senha
+    </button>
 
-    <hr>
-
-    <h2>Login</h2>
-
-    <input type="text" id="usuario" placeholder="Usuário">
-    <input type="password" id="senha" placeholder="Senha">
-
-    <button onclick="entrar()">Entrar</button>
-
-    <p id="mensagem"></p>
+    <p id="forca"></p>
 </div>
 
 <script>
-function cadastrar() {
-    const usuario = document.getElementById("novoUsuario").value;
-    const senha = document.getElementById("novaSenha").value;
+function gerarSenha() {
 
-    localStorage.setItem("usuario", usuario);
-    localStorage.setItem("senha", senha);
-
-    document.getElementById("mensagem").innerText =
-    "Cadastro realizado!";
-}
-
-function entrar() {
-    const usuario = document.getElementById("usuario").value;
-    const senha = document.getElementById("senha").value;
-
-    const usuarioSalvo = localStorage.getItem("usuario");
-    const senhaSalva = localStorage.getItem("senha");
-
-    if(usuario === usuarioSalvo && senha === senhaSalva){
-        document.getElementById("mensagem").innerText =
-        "Login realizado com sucesso!";
-    } else {
-        document.getElementById("mensagem").innerText =
-        "Usuário ou senha incorretos!";
-    }
-}
-    function gerarSenha() {
     const caracteres =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
 
     let senha = "";
 
-    for(let i = 0; i < 12; i++) {
+    for(let i = 0; i < 12; i++){
         senha += caracteres.charAt(
             Math.floor(Math.random() * caracteres.length)
         );
     }
 
-    document.getElementById("novaSenha").value = senha;
-    }
+    document.getElementById("senha").value = senha;
+    document.getElementById("forca").innerText =
+    "🟢 Senha Forte";
+}
+
+function copiarSenha() {
+
+    const campo = document.getElementById("senha");
+
+    campo.select();
+    campo.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(campo.value);
+
+    alert("Senha copiada!");
+}
 </script>
 
 </body>
